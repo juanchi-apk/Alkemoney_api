@@ -22,6 +22,9 @@ const Category = (sequelizedb)=>{
 		underscored:true,
 	
   	})
+	  
 }
+
+
 
 module.exports = Category;

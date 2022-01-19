@@ -1,5 +1,7 @@
 const express = require('express');
 const server = express.Router();
+const  {authUser} = require('../middleware/auth/authUsers')
+
 
 
 const authRouter = require('./auth')
@@ -14,7 +16,7 @@ server.get('/', (req , res)=>{
  
 server.use('/auth', authRouter)
 server.use("/categories", categoryRouter)
-server.use("/transactions", transactionRouter)
+server.use("/transactions", authUser,  transactionRouter)
 server.use("/user", userRouter)
 
 

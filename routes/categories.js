@@ -30,23 +30,34 @@ server.get('/', async function (req,res){
 
 server.post('/add', async function(req , res){
     
-  
-    const {catname} = req.body
+ 
+
+
+ 
    
-    await Categories.create({
+  await Categories.create({
 
     
-		cat_name: catname,
+		cat_name: req.body.data.category,
 		
     })
-    .then(function (user) {
-        console.log(user)
-        res.json({
-            message: 'La Categoria se creo correctamente',
-            data: { 
-                user: user,
-                logging:"true",
-            }
+    .then(function (category) {
+
+       Categories.findAll()
+        .then(function (categories) {
+            console.log(Categories)
+            res.json({
+                data: {
+                   categories,
+                }
+            })
+        })
+        .catch(function (error) {
+            console.log(error);
+            res.status(500).json({
+                message: 'No se puedo acceder a las categorias',
+                data: error
+            })
         })
     })
     .catch(function (error) {

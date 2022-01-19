@@ -18,7 +18,7 @@ const Transaction = (sequelizedb)=>{
         allowNull: false,
       },
 
-      details:{
+    details:{
         type: DataTypes.STRING,
         allowNull: false, 
     }, 

@@ -2,12 +2,9 @@ const bcrypt = require('bcrypt');
 const jwt = require ('jsonwebtoken');
 const {validationResult } = require('express-validator')
 const sequelize = require('../database/index');
-const { param } = require('../routes');
-const User = require('../database/models/User');
+
+
 const {Users} =sequelize;
-const env = require('dotenv');
-
-
 
 
 exports.signup = async (req, res) => {
@@ -16,13 +13,13 @@ exports.signup = async (req, res) => {
     if (!errors.isEmpty()){
 
         
-        return res.sendStatus(400).json({ errors: errors.array() });
+        return res.status(400).json({ errors: errors.array() });
     }
     const  {username, firstname,lastname, email, password, confirmPassword} = req.body
 
 
     if (password != confirmPassword){
-        return res.sendStatus(400).json({ errors: [{
+        return res.status(400).json({ errors: [{
             value: `${req.body.password}`,
             msg: "Passwords don't match",
             param : "password",
@@ -50,7 +47,7 @@ exports.signup = async (req, res) => {
                 id: user.user_id
             }, process.env.SESSION_SECRET, {expiresIn: "1h"})
         
-        return res.sendStatus(200).json({
+        return res.status(200).json({
             data: {
                 result: user,
                 token:token
@@ -59,7 +56,7 @@ exports.signup = async (req, res) => {
         
     } catch (error) {
         console.log(error)
-        res.sendStatus(500).json({
+        res.status(500).json({
             message: 'No se pudo crear el usuario',
             data: error
         })
@@ -74,7 +71,7 @@ exports.signin = async (req, res) =>{
     const errors = validationResult(req);
     //console.log(errors)
     if (!errors.isEmpty()){
-        return res.sendStatus(400).json({ errors: errors.array() });
+        return res.status(400).json({ errors: errors.array() });
     }
     const {email, password} = req.body
 
@@ -84,7 +81,7 @@ exports.signin = async (req, res) =>{
    const passwordConfirmation = await bcrypt.compare(password, user.password)
     
    if(!passwordConfirmation){
-    return res.sendStatus(400).json({ errors: [{
+    return res.status(400).json({ errors: [{
             value: `${req.body.password}`,
             msg: "Passwords don't match",
             param : "password",
@@ -93,13 +90,13 @@ exports.signin = async (req, res) =>{
         })
     }
 
-    const token = await jwt.sign(
+    const token = jwt.sign(
         {
             email : user.email,
             id: user.user_id
         }, process.env.SESSION_SECRET, {expiresIn: "1h"})
 
-    return res.sendStatus(200).json({ 
+    return res.status(200).json({ 
         data: {
             result: user,
             token:token
