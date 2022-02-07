@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const { validationResult } = require('express-validator')
 const sequelize = require('../database/index');
-const { Transactions, Users } = sequelize;
+const { Transactions, Users,Categories} = sequelize;
 const env = require('dotenv');
 
 
@@ -153,7 +153,66 @@ const { userID, email } = req;
 
 
 exports.changetransaction = async (req, res) => {
-  console.log(req.headers)
-  res.status(200)
 
+
+  const{amount, category, details, transactionID,cat_id} = req.body
+  const { userID, email } = req;
+ /*  console.log("amount: " + amount)
+  console.log("category: " + category)
+  console.log("details: " + details)
+  console.log("transactionID: " + transactionID)
+  console.log("cat_id: " + cat_id)
+  console.log("userID: " + userID)
+  console.log("email: " + email) */
+
+
+console.log(typeof cat_id) 
+
+  let newCat;
+  try{
+  
+
+
+  if(category.length!=0){
+
+    const selected_cat_id = await Categories.findOne({where:{cat_name: category}})
+    newCat = selected_cat_id.cat_id
+  }else{
+    newCat = cat_id;
+    
+  }
+
+    const changedTransaction = await Transactions.update ({
+      amount: amount, 
+      details:details,
+      cat_id: newCat,
+
+    },{where:{
+      id_transaction : transactionID
+    }})
+  
+
+  console.log(changedTransaction)
+  
+
+  res.status(200).json({data:"todo bien"})
+}catch{
+  res.status(400).json({data:"todoalagoma"})
+}
 };
+
+exports.deletetransaction = async (req, res)=>{
+  const { userID, email } = req;
+  const transactionID = (req.body.transactionID)
+ 
+ try{ await Transactions.destroy({
+    where:{
+      id_transaction : transactionID
+    }
+  }) 
+
+  res.status(200).json({ message:"ok"})
+}catch{
+
+}
+}

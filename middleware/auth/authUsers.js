@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken');
 
 const authUser = async function(req,res, next) {
-
-  try{
+/*   console.log(req.headers)
+ */  try{
     const token  = req.headers.authorization.split(" ")[1];
     const isNormalAuth = token.length < 500;
     
@@ -15,12 +15,12 @@ const authUser = async function(req,res, next) {
 
 
       decodedData = jwt.verify(token, process.env.SESSION_SECRET);
-      console.log(decodedData)
+  /*     console.log(decodedData) */
       userID = decodedData?.id;
       email =decodedData?.email;
     
       } else{
-        ("aca no tiene que entrar")
+       /*  ("aca no tiene que entrar") */
       decodedData = jwt.decode(token);
       userID = decodedData?.sub;
       email = decodedData?.email;
@@ -30,7 +30,7 @@ const authUser = async function(req,res, next) {
     return next()
   
   }catch{
-    return res.status(403).json({message: "Access denied."})
+    return res.status(403).json({message: "se rompe aca."})
 
   }
   
